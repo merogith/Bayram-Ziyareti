@@ -24,9 +24,19 @@ export const makeContext = (level: Level): EvalContext => {
   }
 
   const sideOf = new Map<string, Side>();
-  if (level.mode === 'scenario' && level.sides) {
-    level.sides.kiz.forEach((s) => sideOf.set(s, 'kiz'));
-    level.sides.damat.forEach((s) => sideOf.set(s, 'damat'));
+  if (level.mode === 'scenario') {
+    if (level.sides) {
+      level.sides.kiz.forEach((s) => sideOf.set(s, 'kiz'));
+      level.sides.damat.forEach((s) => sideOf.set(s, 'damat'));
+    }
+    // Zone bridge: a slot's zone may carry a side, feeding side/sameSide predicates.
+    if (level.zones && level.slotZone) {
+      const zoneSide = new Map(level.zones.map((z) => [z.id, z.side]));
+      for (const [slotId, zoneId] of Object.entries(level.slotZone)) {
+        const side = zoneSide.get(zoneId);
+        if (side && !sideOf.has(slotId)) sideOf.set(slotId, side);
+      }
+    }
   }
 
   return { level, people, graph, seatIndex, sideOf };
@@ -68,12 +78,24 @@ export const evalPredicate = (
       return slotOf(p.personId) === p.slotId;
     case 'notInSlot':
       return slotOf(p.personId) !== undefined && slotOf(p.personId) !== p.slotId;
+    case 'isInOneOf': {
+      const s = slotOf(p.personId);
+      return s !== undefined && p.slotIds.includes(s);
+    }
     case 'relation': {
       if (!ctx.graph) return false;
       const sa = slotOf(p.a);
       const sb = slotOf(p.b);
       if (!sa || !sb) return false;
       return relationHolds(ctx.graph, genderOf, sa, sb, p.relation);
+    }
+    case 'notRelation': {
+      // Negative: both must be placed before this can be judged satisfied.
+      if (!ctx.graph) return false;
+      const sa = slotOf(p.a);
+      const sb = slotOf(p.b);
+      if (!sa || !sb) return false;
+      return !relationHolds(ctx.graph, genderOf, sa, sb, p.relation);
     }
     case 'attr': {
       const personId = occupant(p.slotId);
@@ -92,6 +114,15 @@ export const evalPredicate = (
       if (ia === undefined || ib === undefined) return false;
       return ia < ib;
     }
+    case 'seatedAdjacent': {
+      const sa = slotOf(p.a);
+      const sb = slotOf(p.b);
+      if (!sa || !sb) return false;
+      const ia = ctx.seatIndex.get(sa);
+      const ib = ctx.seatIndex.get(sb);
+      if (ia === undefined || ib === undefined) return false;
+      return Math.abs(ia - ib) === 1;
+    }
     case 'moreSenior':
     case 'kissesHandBefore': {
       const aa = ageOf(p.a);
@@ -106,6 +137,14 @@ export const evalPredicate = (
       const za = ctx.sideOf.get(sa);
       const zb = ctx.sideOf.get(sb);
       return za !== undefined && za === zb;
+    }
+    case 'differentSide': {
+      const sa = slotOf(p.a);
+      const sb = slotOf(p.b);
+      if (!sa || !sb) return false;
+      const za = ctx.sideOf.get(sa);
+      const zb = ctx.sideOf.get(sb);
+      return za !== undefined && zb !== undefined && za !== zb;
     }
     case 'side': {
       const s = slotOf(p.personId);

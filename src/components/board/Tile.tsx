@@ -7,9 +7,13 @@ interface Props {
   size?: number;
   /** Hide the name label (used for compact in-slot rendering). */
   compact?: boolean;
+  /** Tap-to-place: highlighted as the currently selected face. */
+  selected?: boolean;
+  /** Tap-to-place: called on a plain tap (no drag). */
+  onSelect?: (personId: string) => void;
 }
 
-export function Tile({ person, size = 56, compact = false }: Props) {
+export function Tile({ person, size = 56, compact = false, selected = false, onSelect }: Props) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: person.id,
     data: { personId: person.id },
@@ -18,9 +22,10 @@ export function Tile({ person, size = 56, compact = false }: Props) {
   return (
     <button
       ref={setNodeRef}
-      className="tile"
+      className={`tile ${selected ? 'tile--selected' : ''}`}
       style={{ opacity: isDragging ? 0.35 : 1, touchAction: 'none' }}
-      aria-label={`${person.name} — sürükle`}
+      aria-label={`${person.name}${selected ? ' (seçili)' : ''} — sürükle veya dokun`}
+      onClick={onSelect ? () => onSelect(person.id) : undefined}
       {...listeners}
       {...attributes}
     >

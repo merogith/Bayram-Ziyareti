@@ -10,9 +10,15 @@ interface Props {
   /** 'ok' | 'bad' | undefined — correctness ring when checking. */
   status?: 'ok' | 'bad';
   side?: Side;
+  /** Tap-to-place: a face is selected and this slot is a valid drop target. */
+  isTarget?: boolean;
+  /** Tap-to-place: this slot's occupant is the currently selected face. */
+  picked?: boolean;
+  /** Tap-to-place: called when the slot is tapped. */
+  onTap?: () => void;
 }
 
-export function Slot({ slot, size, occupant, fixed, status, side }: Props) {
+export function Slot({ slot, size, occupant, fixed, status, side, isTarget, picked, onTap }: Props) {
   const { setNodeRef, isOver } = useDroppable({ id: slot.id, data: { slotId: slot.id } });
   const person = occupant ?? fixed;
 
@@ -22,6 +28,8 @@ export function Slot({ slot, size, occupant, fixed, status, side }: Props) {
     status ? `slot--${status}` : '',
     side ? `slot--side-${side}` : '',
     fixed ? 'slot--fixed' : '',
+    isTarget ? 'slot--target' : '',
+    picked ? 'slot--picked' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -32,6 +40,7 @@ export function Slot({ slot, size, occupant, fixed, status, side }: Props) {
       className={cls}
       style={{ width: size, height: size }}
       aria-label={slot.label ? `${slot.label} kutusu` : 'akrabalık kutusu'}
+      onClick={fixed ? undefined : onTap}
     >
       {person ? (
         fixed ? (

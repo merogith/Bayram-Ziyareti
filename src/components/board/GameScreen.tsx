@@ -3,11 +3,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   DndContext,
   DragOverlay,
+  KeyboardSensor,
+  MeasuringStrategy,
   PointerSensor,
   TouchSensor,
-  closestCenter,
+  pointerWithin,
+  rectIntersection,
   useSensor,
   useSensors,
+  type CollisionDetection,
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
@@ -41,8 +45,11 @@ export function GameScreen() {
   const recordSolve = useProgress((s) => s.recordSolve);
 
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const recorded = useRef(false);
+  // Suppress the click that some browsers fire right after a real drag.
+  const justDragged = useRef(false);
 
   const { ref: stageRef, size: stageSize } = useElementSize<HTMLDivElement>();
 
@@ -51,6 +58,7 @@ export function GameScreen() {
       load(level);
       recorded.current = false;
       setRevealed(false);
+      setSelected(null);
     }
   }, [level, load]);
 
@@ -69,8 +77,17 @@ export function GameScreen() {
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 140, tolerance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 60, tolerance: 6 } }),
+    useSensor(KeyboardSensor),
   );
+
+  // Pointer-first collision: a face dropped over a slot lands there; a face
+  // dropped in empty space returns to the tray instead of snapping to the
+  // nearest far slot (the old closestCenter behaviour).
+  const collision: CollisionDetection = (args) => {
+    const within = pointerWithin(args);
+    return within.length ? within : rectIntersection(args);
+  };
 
   const scale = useMemo(() => {
     if (!level || !stageSize.width) return 1;
@@ -106,10 +123,13 @@ export function GameScreen() {
 
   const onDragStart = (e: DragStartEvent) => {
     setActiveId(String(e.active.id));
+    setSelected(null);
     sfx.pick();
   };
   const onDragEnd = (e: DragEndEvent) => {
     setActiveId(null);
+    justDragged.current = true;
+    setTimeout(() => (justDragged.current = false), 200);
     const personId = String(e.active.id);
     const over = e.over?.id ? String(e.over.id) : null;
     if (!over) return;
@@ -118,6 +138,34 @@ export function GameScreen() {
     } else {
       place(personId, over);
       sfx.drop();
+    }
+  };
+
+  // ---- Tap-to-place (coexists with drag; both funnel through place()) ----
+  const selectPerson = (personId: string) => {
+    if (justDragged.current) return;
+    setSelected((cur) => (cur === personId ? null : personId));
+    if (selected !== personId) sfx.pick();
+  };
+  const tapSlot = (slotId: string) => {
+    if (justDragged.current) return;
+    if (selected) {
+      place(selected, slotId);
+      sfx.drop();
+      setSelected(null);
+    } else {
+      const occupant = assignment[slotId];
+      if (occupant) {
+        setSelected(occupant);
+        sfx.pick();
+      }
+    }
+  };
+  const tapTray = () => {
+    if (justDragged.current) return;
+    if (selected) {
+      place(selected, null);
+      setSelected(null);
     }
   };
 
@@ -133,7 +181,13 @@ export function GameScreen() {
         </button>
       </header>
 
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collision}
+        measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      >
         <div className="game__stage" ref={stageRef}>
           {level.intro && <p className="game__intro">{level.intro}</p>}
           <div className="game__board-wrap">
@@ -143,12 +197,19 @@ export function GameScreen() {
               perSlot={result?.perSlot ?? {}}
               showCheck={showCheck}
               scale={scale}
+              selectedPersonId={selected}
+              onSlotTap={tapSlot}
             />
           </div>
         </div>
 
         <div className="game__bottom">
-          <TileTray people={trayPeople} />
+          <TileTray
+            people={trayPeople}
+            selectedPersonId={selected}
+            onSelect={selectPerson}
+            onTrayTap={tapTray}
+          />
           {!settings.liveCheck && (
             <button className="btn btn--gold game__check" onClick={() => setRevealed(true)}>
               {tr.check} ({moves} {tr.movesLabel.toLowerCase()})
@@ -160,7 +221,11 @@ export function GameScreen() {
         <DragOverlay dropAnimation={null}>
           {activePerson ? (
             <div className="drag-overlay">
-              <Avatar avatar={activePerson.avatar} size={60} name={activePerson.name} />
+              <Avatar
+                avatar={activePerson.avatar}
+                size={Math.round(58 * scale)}
+                name={activePerson.name}
+              />
             </div>
           ) : null}
         </DragOverlay>
