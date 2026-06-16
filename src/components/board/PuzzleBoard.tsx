@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Slot } from './Slot';
 import { routeGenogram, type Seg } from '../../engine/genogram';
+import { TableScene } from './scenes/TableScene';
+import { RoomScene } from './scenes/RoomScene';
+import { COL, ROW, SLOT } from './constants';
+import './scenes/scenes.css';
 import type { Assignment, Level, Person, Side, TreeEdge } from '../../types/puzzle';
-
-const COL = 88;
-const ROW = 116;
-const SLOT = 72;
 
 interface Props {
   level: Level;
@@ -77,6 +77,10 @@ export function PuzzleBoard({
         transformOrigin: 'top center',
       }}
     >
+      {level.mode === 'tree' && <div className="scene scene--tree" aria-hidden />}
+      {level.mode === 'seating' && <TableScene level={level} geo={geo} />}
+      {level.mode === 'scenario' && <RoomScene level={level} geo={geo} />}
+
       <svg className="board__edges" width={geo.width} height={geo.height} aria-hidden>
         {plan.buses.map((s, i) => line(s, 'edge edge--parent', i))}
         {plan.drops.map((s, i) => line(s, 'edge edge--parent', 100 + i))}
@@ -113,15 +117,3 @@ export function PuzzleBoard({
     </div>
   );
 }
-
-export const boardConstants = { COL, ROW, SLOT };
-
-/** Virtual canvas size for a level, used to compute the auto-fit scale. */
-export const boardSize = (level: Level) => {
-  const xs = level.slots.map((s) => s.x);
-  const ys = level.slots.map((s) => s.y);
-  return {
-    width: (Math.max(...xs) - Math.min(...xs)) * COL + SLOT,
-    height: (Math.max(...ys) - Math.min(...ys)) * ROW + SLOT,
-  };
-};

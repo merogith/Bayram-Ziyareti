@@ -46,9 +46,13 @@ export function Slot({ slot, size, occupant, fixed, status, side, isTarget, pick
         fixed ? (
           <div className="slot__fixed-person">
             <Tile person={person} size={size * 0.82} compact />
+            <span className="slot__name">{person.name}</span>
           </div>
         ) : (
-          <Tile person={person} size={size * 0.82} compact />
+          <>
+            <Tile person={person} size={size * 0.82} compact />
+            <span className="slot__name">{person.name}</span>
+          </>
         )
       ) : (
         slot.label && <span className="slot__label">{slot.label}</span>

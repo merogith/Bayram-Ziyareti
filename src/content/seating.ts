@@ -67,4 +67,37 @@ const seating02: SeatingLevel = {
   solution: { p1: 'amca', p2: 'hala', p3: 'yegen1', p4: 'yegen2' },
 };
 
-export const seatingLevels: SeatingLevel[] = [seating01, seating02];
+// 3 — Sofra Düzeni: 5 kişilik sofra, komşuluk + uç koltuk ipuçlarıyla
+const seating03: SeatingLevel = {
+  id: 'seating-03',
+  mode: 'seating',
+  chapterId: 'sofra',
+  title: 'Sofra Düzeni',
+  intro: 'Beş kişilik sofra. Yalnız kıdem yetmez — yan yana ve uç koltuk ipuçlarını birleştir!',
+  difficulty: 3,
+  slots: [
+    { id: 's1', x: 0, y: 0, label: 'Başköşe' },
+    { id: 's2', x: 1, y: 0 },
+    { id: 's3', x: 2, y: 0 },
+    { id: 's4', x: 3, y: 0 },
+    { id: 's5', x: 4, y: 0 },
+  ],
+  seatOrder: ['s1', 's2', 's3', 's4', 's5'],
+  people: [
+    { id: 'dede', name: 'Dede', gender: 'm', age: 85, avatar: makeAvatar({ gender: 'm', ageBand: 'old', mustache: true }) },
+    { id: 'babaanne', name: 'Babaanne', gender: 'f', age: 80, avatar: makeAvatar({ gender: 'f', ageBand: 'old', headscarf: true }) },
+    { id: 'amca', name: 'Amca', gender: 'm', age: 58, avatar: makeAvatar({ gender: 'm', mustache: true }) },
+    { id: 'yenge', name: 'Yenge', gender: 'f', age: 52, avatar: makeAvatar({ gender: 'f' }) },
+    { id: 'yegen', name: 'Yeğen', gender: 'm', age: 20, avatar: makeAvatar({ gender: 'm', ageBand: 'young' }) },
+  ],
+  clues: [
+    { id: 'c1', text: 'Dede başköşeye oturur.', predicate: { kind: 'isInSlot', personId: 'dede', slotId: 's1' } },
+    { id: 'c2', text: 'Babaanne, Dede’nin hemen yanında oturur.', predicate: { kind: 'seatedAdjacent', a: 'babaanne', b: 'dede' } },
+    { id: 'c3', text: 'En küçük Yeğen, sofranın en ucundadır.', predicate: { kind: 'isInSlot', personId: 'yegen', slotId: 's5' } },
+    { id: 'c4', text: 'Amca, Yenge’nin solunda oturur.', predicate: { kind: 'seatedLeftOf', a: 'amca', b: 'yenge' } },
+    { id: 'c5', text: 'Amca ile Yenge yan yana oturur.', predicate: { kind: 'seatedAdjacent', a: 'amca', b: 'yenge' } },
+  ],
+  solution: { s1: 'dede', s2: 'babaanne', s3: 'amca', s4: 'yenge', s5: 'yegen' },
+};
+
+export const seatingLevels: SeatingLevel[] = [seating01, seating02, seating03];

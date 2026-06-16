@@ -127,6 +127,24 @@
   right: 0;
   font-size: 0.58rem;
 }
+.slot__name {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 96%;
+  font-size: 0.56rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: var(--r-pill);
+  padding: 0 5px;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
 .slot__fixed-person {
   pointer-events: none;
   position: relative;
