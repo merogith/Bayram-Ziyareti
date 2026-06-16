@@ -53,17 +53,25 @@ export interface Person {
 export type Predicate =
   | { kind: 'isInSlot'; personId: string; slotId: string }
   | { kind: 'notInSlot'; personId: string; slotId: string }
+  /** Person `personId` sits in one of `slotIds` (a narrowing clue). */
+  | { kind: 'isInOneOf'; personId: string; slotIds: string[] }
   /** Person `a` is the `relation` of person `b` (e.g. a is the `elti` of b). */
   | { kind: 'relation'; a: string; b: string; relation: KinshipTerm }
+  /** Person `a` is NOT the `relation` of person `b` (negative; both must be placed). */
+  | { kind: 'notRelation'; a: string; b: string; relation: KinshipTerm }
   | { kind: 'attr'; slotId: string; attr: 'gender' | 'tag'; value: string }
   /** Person `a` is seated to the left of person `b` (by seatOrder index). */
   | { kind: 'seatedLeftOf'; a: string; b: string }
+  /** Persons `a` and `b` sit in directly adjacent seats (|index diff| === 1). */
+  | { kind: 'seatedAdjacent'; a: string; b: string }
   /** Person `a` is older than person `b` (age fact; informational). */
   | { kind: 'moreSenior'; a: string; b: string }
   /** Person `a` kisses the hand before person `b` (ceremonial, age fact). */
   | { kind: 'kissesHandBefore'; a: string; b: string }
   /** Persons `a` and `b` belong to the same family side. */
   | { kind: 'sameSide'; a: string; b: string }
+  /** Persons `a` and `b` belong to different family sides (both must be placed). */
+  | { kind: 'differentSide'; a: string; b: string }
   /** Person `personId` belongs to the given family side. */
   | { kind: 'side'; personId: string; side: Side };
 
@@ -85,6 +93,27 @@ export interface TreeSlot {
   genderHint?: Gender;
   /** Optional human label shown faintly in the slot, e.g. 'başköşe'. */
   label?: string;
+  /** Genogram escape hatch: children sharing a busGroup hang from one sibling bus. */
+  busGroup?: string;
+}
+
+export type TableShape = 'long' | 'round' | 'L';
+
+/** Optional table geometry for seating scenes. seatOrder remains the source of truth. */
+export interface SeatLayout {
+  shape: TableShape;
+  /** Per-seat layout hints in the same grid units as slots; derived from seatOrder if absent. */
+  seats?: { id: string; x: number; y: number; angle?: number }[];
+}
+
+/** A labeled drop region for the room/house (scenario) scene. */
+export interface Zone {
+  id: string;
+  label: string;
+  /** Optional bridge to the existing side/sameSide predicates. */
+  side?: Side;
+  /** Layout box in the same x/y grid units used by slots. */
+  rect?: { x: number; y: number; w: number; h: number };
 }
 
 export interface TreeEdge {
@@ -117,6 +146,8 @@ export interface SeatingLevel extends LevelBase {
   slots: TreeSlot[];
   /** Canonical left→right ordering of seat ids, used by seatedLeftOf / ordering clues. */
   seatOrder: string[];
+  /** Optional table geometry for the themed seating scene. */
+  table?: SeatLayout;
 }
 
 export interface ScenarioLevel extends LevelBase {
@@ -125,6 +156,10 @@ export interface ScenarioLevel extends LevelBase {
   edges: TreeEdge[];
   /** Solution sides: which slot belongs to which family side. */
   sides?: { kiz: string[]; damat: string[] };
+  /** Labeled rooms/areas for the themed scene; zone.side bridges to side predicates. */
+  zones?: Zone[];
+  /** slotId -> zoneId. Drives room rendering and the zone→side validation bridge. */
+  slotZone?: Record<string, string>;
 }
 
 export type Level = TreeLevel | SeatingLevel | ScenarioLevel;

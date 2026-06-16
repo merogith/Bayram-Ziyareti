@@ -33,16 +33,22 @@ pure, unit-tested code in [`src/engine`](src/engine).
 
 ## Features
 
-- **Three game modes** — Soyağacı (family tree), Bayram Sofrası (seating by seniority /
-  el öpme order), and Kız İsteme & Düğün (which side is the bride's, who's the dünür).
-- **Touch-first drag & drop** via [`@dnd-kit`](https://dndkit.com) with a press-and-hold
-  activation constraint, so a quick swipe still scrolls while a hold drags a tile.
-- **Provably fair puzzles** — an authoring-time solver checks that **every level has
-  exactly one solution**, enforced in CI.
+- **Three distinctly themed game modes** — Soyağacı drawn as a proper **genogram**
+  (couples joined by a marriage line, children hanging off a sibling bus — no crossing
+  "everyone-to-everyone" mesh); Bayram Sofrası laid out around a **dinner table** with
+  the başköşe marked; and Kız İsteme & Düğün as a **room** you sort guests into by side
+  (kız tarafı / damat tarafı / salon).
+- **Two ways to play, mobile-first** — drag a face with [`@dnd-kit`](https://dndkit.com)
+  (instant pickup, pointer-first collision so a stray drop returns to the pool), **or**
+  just **tap a face then tap a spot**. Big hit targets, names under placed faces.
+- **Tricky-but-fair puzzles** — same-generation look-alikes mean you deduce from the
+  clues, not the picture; clues chain (e.g. _babaanne_ = "father's mother", _dünür_ via
+  which side). An authoring-time solver still checks **every level has exactly one
+  solution**, enforced in CI.
 - **Installable PWA** — works offline after first load, portrait-locked, safe-area aware.
 - **No image assets** — every avatar is composed deterministically from an emoji + CSS.
-- **Accessibility** — ARIA-labelled tiles/slots, reduced-motion support, sound & haptics
-  toggles.
+- **Accessibility** — ARIA-labelled tiles/slots, keyboard sensor, reduced-motion
+  support, sound & haptics toggles.
 - A built-in **Akrabalık Sözlüğü** (kinship glossary) explaining all 28 terms.
 
 ## Tech stack
@@ -58,6 +64,7 @@ src/
     clues.ts       evaluate machine-readable clue predicates against a placement
     validate.ts    exact-solution validator + per-slot correctness
     solver.ts      authoring-time uniqueness checker (dev/test only)
+    genogram.ts    orthogonal family-tree edge router (marriage bar / sibling bus)
   content/       Levels as data (tree / seating / scenario) + chapter registry
   store/         Zustand: gameStore (active board) + progressStore (persisted)
   components/    Avatar, board (DnD), and navigation screens
