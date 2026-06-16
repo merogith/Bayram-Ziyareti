@@ -3,9 +3,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// GitHub Pages serves this project at /bayram-ziyareti/.
-// Override with BASE_PATH=/ for local file previews if needed.
-const base = process.env.BASE_PATH ?? '/bayram-ziyareti/';
+// GitHub Pages serves this project at /Bayram-Ziyareti/ (the repo name is
+// case-sensitive in the asset path). Override with BASE_PATH=/ for local previews.
+const base = process.env.BASE_PATH ?? '/Bayram-Ziyareti/';
 
 export default defineConfig({
   base,

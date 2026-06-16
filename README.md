@@ -4,10 +4,10 @@
 > the right kinship slots — _elti_, _bacanak_, _dünür_, _görümce_, _kayınço_ — using the
 > clue cards to deduce who is who, the way every Turkish family does over holiday tea.
 
-[![CI](https://github.com/merogith/bayram-ziyareti/actions/workflows/ci.yml/badge.svg)](https://github.com/merogith/bayram-ziyareti/actions/workflows/ci.yml)
-[![Deploy](https://github.com/merogith/bayram-ziyareti/actions/workflows/deploy.yml/badge.svg)](https://github.com/merogith/bayram-ziyareti/actions/workflows/deploy.yml)
+[![CI](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/ci.yml/badge.svg)](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/ci.yml)
+[![Deploy](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/deploy.yml/badge.svg)](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/deploy.yml)
 
-**▶ Live demo:** https://merogith.github.io/bayram-ziyareti/
+**▶ Live demo:** https://merogith.github.io/Bayram-Ziyareti/
 
 Inspired by App-Store "Family Tree! – Logic Puzzles" games, reimagined around the
 remarkably specific vocabulary of Turkish kinship — which makes for genuinely good
@@ -72,7 +72,7 @@ uniqueness. See [`src/types/puzzle.ts`](src/types/puzzle.ts).
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173/bayram-ziyareti/
+npm run dev        # http://localhost:5173/Bayram-Ziyareti/
 npm test           # engine + content + UI integration tests
 npm run build      # production build + service worker
 ```
@@ -92,8 +92,8 @@ npm test
 
 Pushing to `main` runs [`deploy.yml`](.github/workflows/deploy.yml), which builds and
 publishes to GitHub Pages. Enable it once under **Settings → Pages → Build and
-deployment → GitHub Actions**. The Vite `base` is `/bayram-ziyareti/` and routing is
-hash-based, so no server rewrites are needed.
+deployment → GitHub Actions**. The Vite `base` is `/Bayram-Ziyareti/` (matching the
+repo name) and routing is hash-based, so no server rewrites are needed.
 
 ## Roadmap
 
