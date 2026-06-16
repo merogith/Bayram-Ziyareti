@@ -1,5 +1,7 @@
 import type { AvatarDescriptor, Gender } from './avatar';
 
+export type { Gender };
+
 export type Mode = 'tree' | 'seating' | 'scenario';
 
 /** Turkish kinship terms used by the puzzles. Derived from tree structure, never stored raw. */
