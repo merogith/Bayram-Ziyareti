@@ -10,13 +10,17 @@ export type KinshipTerm =
   | 'ogul'
   | 'kiz'
   | 'kardes'
-  | 'dede'
-  | 'nine'
+  | 'dede' // grandfather (either side)
+  | 'nine' // grandmother (generic)
+  | 'babaanne' // father's mother
+  | 'anneanne' // mother's mother
   | 'torun'
   | 'amca' // father's brother
   | 'dayi' // mother's brother
   | 'hala' // father's sister
   | 'teyze' // mother's sister
+  | 'yegen' // sibling's child (niece/nephew)
+  | 'kuzen' // cousin (aunt's/uncle's child)
   | 'yenge' // wife of one's brother/uncle
   | 'eniste' // husband of one's sister/aunt
   | 'gelin' // son's wife

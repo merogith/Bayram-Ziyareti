@@ -1,0 +1,45 @@
+:root {
+  /* Warm Anatolian palette */
+  --cream: #fdf6ec;
+  --cream-2: #f6ead6;
+  --ink: #2c2117;
+  --ink-soft: #6f5b47;
+  --cini: #1f6f8b; /* çini blue */
+  --cini-dark: #155264;
+  --nar: #c0392b; /* pomegranate red */
+  --nar-soft: #e7796b;
+  --gold: #d4a017;
+  --gold-soft: #f0d27a;
+  --leaf: #4f8a4f;
+  --kiz: #c76b98; /* kız tarafı tint */
+  --damat: #3f7fb0; /* damat tarafı tint */
+
+  --ok: #3f9d57;
+  --bad: #d4564a;
+
+  --surface: #ffffff;
+  --surface-line: #ead9bf;
+  --shadow: 0 6px 18px rgba(54, 36, 18, 0.14);
+  --shadow-sm: 0 2px 6px rgba(54, 36, 18, 0.12);
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-pill: 999px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+
+  --touch: 56px;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  --font: 'Quicksand', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}

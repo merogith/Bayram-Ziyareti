@@ -97,8 +97,20 @@ export const relationHolds = (
       return male(a) && some(parents(b), (p) => has(parents(p), a));
     case 'nine':
       return female(a) && some(parents(b), (p) => has(parents(p), a));
+    case 'babaanne':
+      // a (female) is the mother of b's father
+      return female(a) && some(parents(b), (p) => male(p) && has(parents(p), a));
+    case 'anneanne':
+      // a (female) is the mother of b's mother
+      return female(a) && some(parents(b), (p) => female(p) && has(parents(p), a));
     case 'torun':
       return some(children(b), (c) => has(children(c), a));
+    case 'yegen':
+      // a is the child of a sibling of b (b is the amca/dayı/hala/teyze)
+      return some(sibs(b), (s) => has(children(s), a));
+    case 'kuzen':
+      // a's parent is a sibling of b's parent
+      return some(parents(a), (pa) => some(parents(b), (pb) => has(sibs(pb), pa)));
     case 'amca':
       return male(a) && some(parents(b), (p) => male(p) && has(sibs(p), a));
     case 'dayi':

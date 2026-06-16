@@ -15,6 +15,7 @@ const slots: TreeSlot[] = [
   { id: 's_b', x: 2, y: 1 },
   { id: 's_bw', x: 3, y: 1 },
   { id: 's_c', x: 0, y: 2 },
+  { id: 's_d', x: 2, y: 2 }, // child of B & Bw -> C's cousin
 ];
 const edges: TreeEdge[] = [
   { from: 's_gf', to: 's_gm', type: 'spouse' },
@@ -26,6 +27,8 @@ const edges: TreeEdge[] = [
   { from: 's_b', to: 's_bw', type: 'spouse' },
   { from: 's_a', to: 's_c', type: 'parent' },
   { from: 's_aw', to: 's_c', type: 'parent' },
+  { from: 's_b', to: 's_d', type: 'parent' },
+  { from: 's_bw', to: 's_d', type: 'parent' },
 ];
 const gender: Record<string, Gender> = {
   s_gf: 'm',
@@ -35,6 +38,7 @@ const gender: Record<string, Gender> = {
   s_b: 'm',
   s_bw: 'f',
   s_c: 'm',
+  s_d: 'f',
 };
 const g = buildGraph(slots, edges);
 const genderOf = (s: string) => gender[s];
@@ -65,6 +69,24 @@ describe('kinship derivation', () => {
     expect(rel('s_bw', 's_c', 'yenge')).toBe(true);
     // Aw is C's mother (anne), not yenge
     expect(rel('s_aw', 's_c', 'amca')).toBe(false);
+  });
+
+  it('distinguishes babaanne from anneanne by side', () => {
+    // GM is the mother of A (C's father) -> C's babaanne, not anneanne
+    expect(rel('s_gm', 's_c', 'babaanne')).toBe(true);
+    expect(rel('s_gm', 's_c', 'anneanne')).toBe(false);
+    // generic nine still holds for any grandmother
+    expect(rel('s_gm', 's_c', 'nine')).toBe(true);
+  });
+
+  it('derives yeğen and kuzen', () => {
+    // C is the child of A; relative to A's brother B, C is a yeğen
+    expect(rel('s_c', 's_b', 'yegen')).toBe(true);
+    // C and D are children of two brothers (A, B) -> kuzen
+    expect(rel('s_c', 's_d', 'kuzen')).toBe(true);
+    expect(rel('s_d', 's_c', 'kuzen')).toBe(true);
+    // siblings are not cousins
+    expect(rel('s_a', 's_b', 'kuzen')).toBe(false);
   });
 
   it('returns false when a structural slot is empty (indeterminate)', () => {

@@ -210,4 +210,42 @@ const level05: TreeLevel = {
   solution: { s_wife1: 'ayse', s_brother1: 'ali', s_brother2: 'veli', s_wife2: 'fatma' },
 };
 
-export const treeLevels: TreeLevel[] = [level01, level02, level03, level04, level05];
+// 6 — Babaanne mi Anneanne mi?: babanın annesi babaanne, annenin annesi anneanne
+const level06: TreeLevel = {
+  id: 'tree-06',
+  mode: 'tree',
+  chapterId: 'soyagaci',
+  title: 'Babaanne mi Anneanne mi?',
+  intro: 'İki nine, iki kucak: babanın annesi babaanne, annenin annesi anneannedir.',
+  difficulty: 2,
+  slots: [
+    { id: 's_babaanne', x: 0, y: 0, genderHint: 'f', label: 'Babaanne' },
+    { id: 's_anneanne', x: 3, y: 0, genderHint: 'f', label: 'Anneanne' },
+    { id: 's_baba', x: 0.5, y: 1, genderHint: 'm' },
+    { id: 's_anne', x: 2.5, y: 1, genderHint: 'f' },
+    { id: 's_can', x: 1.5, y: 2, genderHint: 'm' },
+  ],
+  edges: [
+    { from: 's_babaanne', to: 's_baba', type: 'parent' },
+    { from: 's_anneanne', to: 's_anne', type: 'parent' },
+    { from: 's_baba', to: 's_anne', type: 'spouse' },
+    { from: 's_baba', to: 's_can', type: 'parent' },
+    { from: 's_anne', to: 's_can', type: 'parent' },
+  ],
+  people: [
+    { id: 'hanife', name: 'Hanife', gender: 'f', avatar: makeAvatar({ gender: 'f', ageBand: 'old', headscarf: true }) },
+    { id: 'sultan', name: 'Sultan', gender: 'f', avatar: makeAvatar({ gender: 'f', ageBand: 'old', headscarf: true, glasses: true }) },
+    { id: 'ahmet', name: 'Ahmet', gender: 'm', avatar: makeAvatar({ gender: 'm', mustache: true }) },
+    { id: 'elif', name: 'Elif', gender: 'f', avatar: makeAvatar({ gender: 'f' }) },
+    { id: 'can', name: 'Can', gender: 'm', avatar: makeAvatar({ gender: 'm', ageBand: 'child' }) },
+  ],
+  clues: [
+    { id: 'c1', text: 'Ahmet, Can’ın babasıdır.', predicate: { kind: 'relation', a: 'ahmet', b: 'can', relation: 'baba' } },
+    { id: 'c2', text: 'Elif, Can’ın annesidir.', predicate: { kind: 'relation', a: 'elif', b: 'can', relation: 'anne' } },
+    { id: 'c3', text: 'Hanife, Can’ın babaannesidir (babasının annesi).', predicate: { kind: 'relation', a: 'hanife', b: 'can', relation: 'babaanne' } },
+    { id: 'c4', text: 'Sultan, Can’ın anneannesidir (annesinin annesi).', predicate: { kind: 'relation', a: 'sultan', b: 'can', relation: 'anneanne' } },
+  ],
+  solution: { s_babaanne: 'hanife', s_anneanne: 'sultan', s_baba: 'ahmet', s_anne: 'elif', s_can: 'can' },
+};
+
+export const treeLevels: TreeLevel[] = [level01, level02, level03, level06, level04, level05];

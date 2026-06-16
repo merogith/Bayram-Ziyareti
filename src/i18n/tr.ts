@@ -1,0 +1,77 @@
+/** All Turkish UI copy lives here so the tone/humour stays curated in one place. */
+export const tr = {
+  appName: 'Bayram Ziyareti',
+  tagline: 'Akrabalık bulmacası',
+  play: 'Oyna',
+  modes: 'Bölümler',
+  settings: 'Ayarlar',
+  back: 'Geri',
+  next: 'Sonraki',
+  retry: 'Baştan',
+  check: 'Kontrol et',
+  clues: 'İpuçları',
+  level: 'Bölüm',
+  locked: 'Kilitli',
+  solved: 'Çözüldü',
+  pickMode: 'Bir oyun türü seç',
+  pickLevel: 'Bir bölüm seç',
+  win: {
+    title: 'Helal olsun!',
+    subtitle: 'Soyağacını çözdün, sofra hazır. ☕',
+    nextLevel: 'Sonraki bölüm',
+    backToLevels: 'Bölümlere dön',
+  },
+  hint: {
+    drag: 'Yüzleri doğru kutulara sürükle',
+    tapClue: 'İpuçlarını okumak için dokun',
+  },
+  settingsLabels: {
+    sound: 'Ses',
+    haptics: 'Titreşim',
+    reduceMotion: 'Animasyonu azalt',
+    liveCheck: 'Anlık doğru/yanlış göster',
+    reset: 'İlerlemeyi sıfırla',
+    resetConfirm: 'Tüm ilerleme silinsin mi?',
+  },
+  home: {
+    intro:
+      'Eltiler, bacanaklar, dünürler, görümceler… Türk akrabalık labirentinde herkesi yerli yerine koy.',
+  },
+  fit: 'Sığdır',
+  movesLabel: 'Hamle',
+} as const;
+
+import type { KinshipTerm } from '../types/puzzle';
+
+/** Display labels + short explanations for the kinship glossary. */
+export const kinshipLabels: Record<KinshipTerm, { label: string; desc: string }> = {
+  esi: { label: 'Eş', desc: 'Karı veya koca.' },
+  anne: { label: 'Anne', desc: 'Çocuğun annesi.' },
+  baba: { label: 'Baba', desc: 'Çocuğun babası.' },
+  ogul: { label: 'Oğul', desc: 'Erkek çocuk.' },
+  kiz: { label: 'Kız', desc: 'Kız çocuk.' },
+  kardes: { label: 'Kardeş', desc: 'Aynı anne babadan.' },
+  dede: { label: 'Dede', desc: 'Annenin ya da babanın babası.' },
+  nine: { label: 'Nine', desc: 'Büyükanne (genel).' },
+  babaanne: { label: 'Babaanne', desc: 'Babanın annesi.' },
+  anneanne: { label: 'Anneanne', desc: 'Annenin annesi.' },
+  torun: { label: 'Torun', desc: 'Çocuğun çocuğu.' },
+  amca: { label: 'Amca', desc: 'Babanın erkek kardeşi.' },
+  dayi: { label: 'Dayı', desc: 'Annenin erkek kardeşi.' },
+  hala: { label: 'Hala', desc: 'Babanın kız kardeşi.' },
+  teyze: { label: 'Teyze', desc: 'Annenin kız kardeşi.' },
+  yegen: { label: 'Yeğen', desc: 'Kardeşin çocuğu.' },
+  kuzen: { label: 'Kuzen', desc: 'Amca/dayı/hala/teyze çocuğu.' },
+  yenge: { label: 'Yenge', desc: 'Erkek kardeşin ya da amca/dayının eşi.' },
+  eniste: { label: 'Enişte', desc: 'Kız kardeşin ya da hala/teyzenin eşi.' },
+  gelin: { label: 'Gelin', desc: 'Oğlun eşi.' },
+  damat: { label: 'Damat', desc: 'Kızın eşi.' },
+  kayinvalide: { label: 'Kayınvalide', desc: 'Eşin annesi (kaynana).' },
+  kayinpeder: { label: 'Kayınpeder', desc: 'Eşin babası.' },
+  kayinco: { label: 'Kayınço', desc: 'Eşin erkek kardeşi (kayınbirader).' },
+  gorumce: { label: 'Görümce', desc: 'Kocanın kız kardeşi.' },
+  baldiz: { label: 'Baldız', desc: 'Eşin (kadının) kız kardeşi.' },
+  elti: { label: 'Elti', desc: 'İki erkek kardeşin eşleri birbirinin eltisi.' },
+  bacanak: { label: 'Bacanak', desc: 'İki kız kardeşin eşleri birbirinin bacanağı.' },
+  dunur: { label: 'Dünür', desc: 'Evlenen çiftin aileleri birbirinin dünürü.' },
+};
