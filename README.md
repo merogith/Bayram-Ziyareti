@@ -7,7 +7,9 @@
 [![CI](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/ci.yml/badge.svg)](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/ci.yml)
 [![Deploy](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/deploy.yml/badge.svg)](https://github.com/merogith/Bayram-Ziyareti/actions/workflows/deploy.yml)
 
-**▶ Live demo:** https://merogith.github.io/Bayram-Ziyareti/
+[Play the game](https://merogith.github.io/Bayram-Ziyareti/) · [Try the first puzzle](https://merogith.github.io/Bayram-Ziyareti/#/play/tree-01)
+
+The first puzzle, **Çekirdek Aile** (Nuclear Family), asks you to place four people in a family tree. One clue reads “Ahmet, Mert’in babasıdır” (Ahmet is Mert’s father). The game checks that relationship against the tree, and the [content tests](tests/engine/content.test.ts) verify that each puzzle has exactly one solution.
 
 Inspired by App-Store "Family Tree! – Logic Puzzles" games, reimagined around the
 remarkably specific vocabulary of Turkish kinship — which makes for genuinely good
