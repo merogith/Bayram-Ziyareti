@@ -63,7 +63,10 @@
   border-radius: var(--r-md);
   background: rgba(255, 255, 255, 0.55);
   border: 2px dashed var(--surface-line);
-  transition: border-color 0.12s ease, background 0.12s ease, transform 0.12s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    transform 0.12s ease;
 }
 .slot--over {
   border-color: var(--cini);
@@ -298,4 +301,142 @@
     transform: scale(0.8);
     opacity: 0;
   }
+}
+
+/* Select-then-place controls keep the same puzzle usable by touch and keyboard. */
+.game__stage {
+  flex: none;
+  overflow: visible;
+}
+.game__board-wrap {
+  padding: 12px 0;
+}
+.game__tools {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 0 12px 10px;
+  flex-wrap: wrap;
+}
+.game__tools button {
+  min-height: 44px;
+  border: 1px solid var(--surface-line);
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--cini-dark);
+  padding: 6px 12px;
+  font-weight: 700;
+}
+.game__status {
+  min-height: 2.4em;
+  margin: 0;
+  font-size: 0.87rem;
+  text-align: center;
+}
+.game__stats {
+  margin: 0;
+  font-size: 0.77rem;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.game__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.game__check {
+  font-size: 0.9rem;
+  padding: 10px 14px;
+}
+.slot__target {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  border-radius: inherit;
+  padding: 2px;
+  position: relative;
+  touch-action: none;
+}
+.slot__name {
+  font-size: 0.65rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.slot__label {
+  position: absolute;
+  top: calc(100% + 3px);
+  width: 98px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  line-height: 1.1;
+}
+.slot__status {
+  position: absolute;
+  top: -9px;
+  right: -7px;
+  border-radius: 50%;
+  background: var(--surface);
+  font-weight: 800;
+  padding: 1px 5px;
+}
+.slot--selected,
+.tile--selected {
+  outline: 3px solid var(--cini);
+  outline-offset: 3px;
+}
+.tile {
+  min-width: 56px;
+  flex-shrink: 0;
+  padding: 4px;
+  border-radius: 10px;
+}
+.play-help,
+.win-dialog {
+  color: var(--ink);
+  width: min(92vw, 480px);
+  max-height: 88dvh;
+  padding: 24px;
+  overflow-y: auto;
+  border: 1px solid var(--surface-line);
+}
+.play-help::backdrop,
+.win-dialog::backdrop {
+  background: rgba(44, 33, 23, 0.6);
+}
+.play-help h2 {
+  margin-top: 0;
+}
+.play-help p,
+.instructions {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.instructions {
+  padding-left: 24px;
+}
+.instructions li {
+  margin: 10px 0;
+}
+.english-guide {
+  border-top: 1px solid var(--surface-line);
+  padding-top: 12px;
+}
+.play-help .glossary {
+  margin-bottom: 20px;
+}
+.win-dialog {
+  text-align: center;
+  max-width: 360px;
+  animation: pop 0.28s ease;
+}
+.win-dialog h2 {
+  color: var(--nar);
 }

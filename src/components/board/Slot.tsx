@@ -1,50 +1,88 @@
-import { useDroppable } from '@dnd-kit/core';
-import { Tile } from './Tile';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { Avatar } from '../Avatar';
 import type { Person, Side, TreeSlot } from '../../types/puzzle';
 
 interface Props {
   slot: TreeSlot;
   size: number;
+  number: number;
   occupant?: Person;
   fixed?: Person;
-  /** 'ok' | 'bad' | undefined — correctness ring when checking. */
   status?: 'ok' | 'bad';
   side?: Side;
+  selectedId: string | null;
+  onChoose: (slotId: string) => void;
 }
-
-export function Slot({ slot, size, occupant, fixed, status, side }: Props) {
-  const { setNodeRef, isOver } = useDroppable({ id: slot.id, data: { slotId: slot.id } });
-  const person = occupant ?? fixed;
-
+export function Slot({
+  slot,
+  size,
+  number,
+  occupant,
+  fixed,
+  status,
+  side,
+  selectedId,
+  onChoose,
+}: Props) {
+  const { setNodeRef, isOver } = useDroppable({ id: slot.id, disabled: !!fixed });
+  const drag = useDraggable({
+    id: occupant?.id ?? `empty-${slot.id}`,
+    disabled: !occupant || !!fixed,
+  });
+  const person = fixed ?? occupant;
+  const label = slot.label ?? `${number}. kutu`;
   const cls = [
     'slot',
     isOver ? 'slot--over' : '',
     status ? `slot--${status}` : '',
     side ? `slot--side-${side}` : '',
     fixed ? 'slot--fixed' : '',
+    occupant?.id === selectedId ? 'slot--selected' : '',
   ]
     .filter(Boolean)
     .join(' ');
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={cls}
-      style={{ width: size, height: size }}
-      aria-label={slot.label ? `${slot.label} kutusu` : 'akrabalık kutusu'}
-    >
+  const contents = (
+    <>
       {person ? (
-        fixed ? (
-          <div className="slot__fixed-person">
-            <Tile person={person} size={size * 0.82} compact />
-          </div>
-        ) : (
-          <Tile person={person} size={size * 0.82} compact />
-        )
+        <>
+          <Avatar avatar={person.avatar} size={size * 0.68} name={person.name} />
+          <span className="slot__name">{person.name}</span>
+        </>
       ) : (
-        slot.label && <span className="slot__label">{slot.label}</span>
+        <span>{number}</span>
       )}
-      {person && slot.label && <span className="slot__label slot__label--mini">{slot.label}</span>}
+      <span className="slot__label">
+        {label}
+        {fixed ? ' 📌' : ''}
+      </span>
+      {status && (
+        <span className="slot__status" aria-hidden>
+          {status === 'ok' ? '✓' : '×'}
+        </span>
+      )}
+    </>
+  );
+  return (
+    <div ref={setNodeRef} className={cls} style={{ width: size, height: size }} data-slot={slot.id}>
+      {fixed ? (
+        <div className="slot__target" aria-label={`${label} — ${fixed.name}, sabit`}>
+          {contents}
+        </div>
+      ) : (
+        <button
+          ref={drag.setNodeRef}
+          className="slot__target"
+          {...drag.attributes}
+          {...drag.listeners}
+          aria-disabled={false}
+          aria-roledescription={occupant ? 'draggable' : undefined}
+          aria-label={`${label} — ${occupant?.name ?? 'boş'}`}
+          aria-pressed={!!occupant && occupant.id === selectedId}
+          onClick={() => onChoose(slot.id)}
+        >
+          {contents}
+        </button>
+      )}
     </div>
   );
 }

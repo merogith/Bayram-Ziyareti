@@ -1,10 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { act } from 'react';
+import { beforeEach, describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { GameScreen } from '../../src/components/board/GameScreen';
-import { useGame } from '../../src/store/gameStore';
-import { getLevel } from '../../src/content';
+import { useProgress } from '../../src/store/progressStore';
 
 const renderLevel = (levelId: string) =>
   render(
@@ -15,32 +14,33 @@ const renderLevel = (levelId: string) =>
     </MemoryRouter>,
   );
 
-describe('GameScreen integration', () => {
-  it('shows the win overlay once a level is solved', () => {
+beforeEach(() => {
+  useProgress.getState().reset();
+  useProgress.getState().acknowledgeInstructions();
+});
+describe('GameScreen selection controls', () => {
+  it('finishes a puzzle through the visible person and slot buttons', async () => {
+    const user = userEvent.setup();
     renderLevel('tree-01');
-    const level = getLevel('tree-01')!;
-
-    // Drive the store to the authored solution (drag-drop is exercised manually).
-    act(() => {
-      for (const [slotId, personId] of Object.entries(level.solution)) {
-        useGame.getState().place(personId, slotId);
-      }
-    });
-
-    expect(screen.getByText('Helal olsun!')).toBeInTheDocument();
+    for (const [name, number] of [
+      ['Ahmet', 1],
+      ['Ayşe', 2],
+      ['Mert', 3],
+      ['Zeynep', 4],
+    ] as const) {
+      await user.click(screen.getByRole('button', { name: `${name} — seç veya sürükle` }));
+      await user.click(screen.getByRole('button', { name: `${number}. kutu — boş` }));
+    }
+    expect(screen.getByRole('dialog', { name: 'Helal olsun!' })).toBeInTheDocument();
+    expect(useProgress.getState().solvedLevels['tree-01'].stars).toBe(3);
   });
-
-  it('does not win on an incorrect arrangement', () => {
-    renderLevel('tree-02');
-    const level = getLevel('tree-02')!;
-    const wrong = Object.entries(level.solution);
-
-    act(() => {
-      // Swap the first two people into each other's slots.
-      useGame.getState().place(wrong[1][1], wrong[0][0]);
-      useGame.getState().place(wrong[0][1], wrong[1][0]);
-    });
-
-    expect(screen.queryByText('Helal olsun!')).not.toBeInTheDocument();
+  it('does not win on an incorrect arrangement and shows check feedback', async () => {
+    const user = userEvent.setup();
+    renderLevel('tree-01');
+    await user.click(screen.getByRole('button', { name: 'Ayşe — seç veya sürükle' }));
+    await user.click(screen.getByRole('button', { name: '1. kutu — boş' }));
+    await user.click(screen.getByRole('button', { name: /^Kontrol et$/ }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByText(/✓ doğru, × yanlış/)).toBeInTheDocument();
   });
 });

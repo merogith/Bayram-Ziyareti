@@ -17,7 +17,8 @@ body {
   font-family: var(--font);
   color: var(--ink);
   background: var(--cream);
-  background-image: radial-gradient(circle at 12% 8%, #fff7e9 0%, transparent 40%),
+  background-image:
+    radial-gradient(circle at 12% 8%, #fff7e9 0%, transparent 40%),
     radial-gradient(circle at 88% 92%, #f6e3c8 0%, transparent 45%);
   overscroll-behavior: none;
   -webkit-user-select: none;
@@ -50,7 +51,9 @@ button {
   background: var(--cini);
   color: #fff;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.08s ease, filter 0.12s ease;
+  transition:
+    transform 0.08s ease,
+    filter 0.12s ease;
 }
 .btn:active {
   transform: translateY(1px) scale(0.985);
@@ -128,4 +131,16 @@ button {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+:focus-visible {
+  outline: 3px solid var(--cini-dark);
+  outline-offset: 4px;
+}
+.app[data-reduce-motion='true'] *,
+.app[data-reduce-motion='true'] *::before,
+.app[data-reduce-motion='true'] *::after {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
 }
