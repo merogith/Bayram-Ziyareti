@@ -37,6 +37,9 @@ pure, unit-tested code in [`src/engine`](src/engine).
 
 - **Three game modes** — Soyağacı (family tree), Bayram Sofrası (seating by seniority /
   el öpme order), and Kız İsteme & Düğün (which side is the bride's, who's the dünür).
+- **Tap or keyboard play** — select a person, then a numbered slot with tap/click or Tab + Enter/Space. Pinned anchors stay fixed, occupied slots swap safely, and Escape cancels a selection.
+- **Resumable puzzles** — partial placements, moves, hints, stars and settings stay in this browser. A blocked-storage session remains playable with a visible notice.
+- **In-play help** — first-visit instructions with a short English orientation, a kinship glossary, settings, check feedback, and a one-placement hint that transparently reduces stars. The last puzzle gives a complete ending.
 - **Touch-first drag & drop** via [`@dnd-kit`](https://dndkit.com) with a press-and-hold
   activation constraint, so a quick swipe still scrolls while a hold drags a tile.
 - **Provably fair puzzles** — an authoring-time solver checks that **every level has
@@ -84,10 +87,15 @@ npm run build      # production build + service worker
 - **Engine unit tests** — kinship derivation for every term.
 - **Content integrity** — for each level, the solver asserts exactly one solution and
   that it equals the authored answer.
-- **UI integration** — drives a level to the win state through the real React tree.
+- **UI integration** — completes a level through the visible selection controls.
+- **Browser journeys** — every existing level is solved with real click/tap input on desktop and a mobile touch profile; each includes partial save, reload, reset and progression through the final ending. Keyboard-only completion, safe drag/drop, hints, settings and blocked storage have separate regressions.
 
 ```bash
 npm test
+npx playwright install chromium
+npm run e2e
+# Reuse a system browser if available:
+# PLAYWRIGHT_CHROMIUM_PATH=/usr/bin/chromium npm run e2e
 ```
 
 ## Deployment
@@ -101,7 +109,9 @@ repo name) and routing is hash-based, so no server rewrites are needed.
 
 - More chapters and a daily puzzle.
 - Composed-SVG avatars (mustache / headscarf / glasses layers).
-- Pinch-zoom & pan for very large trees; real-browser E2E (Playwright).
+- Pinch-zoom & pan for very large trees.
+
+Existing puzzles and their kinship rules are unchanged. Solved levels can be replayed for a better score; restarting one puzzle keeps previously earned stars. Progress is local to one browser and is not synchronized across devices.
 
 ---
 

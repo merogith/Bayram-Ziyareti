@@ -1,3 +1,4 @@
+import { useProgress } from './store/progressStore';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HomeScreen } from './components/nav/HomeScreen';
 import { ChapterList } from './components/nav/ChapterList';
@@ -7,9 +8,10 @@ import { Glossary } from './components/nav/Glossary';
 import { GameScreen } from './components/board/GameScreen';
 
 export default function App() {
+  const reduceMotion = useProgress((s) => s.settings.reduceMotion);
   return (
     <HashRouter>
-      <div className="app">
+      <div className="app" data-reduce-motion={reduceMotion}>
         <Routes>
           <Route path="/" element={<HomeScreen />} />
           <Route path="/modes" element={<ChapterList />} />

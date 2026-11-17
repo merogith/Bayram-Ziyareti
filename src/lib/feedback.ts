@@ -4,13 +4,22 @@ import { useProgress } from '../store/progressStore';
 let audioCtx: AudioContext | null = null;
 const ctx = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  const AC =
+    window.AudioContext ??
+    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
   if (!AC) return null;
   if (!audioCtx) audioCtx = new AC();
+  if (audioCtx.state === 'suspended') void audioCtx.resume().catch(() => {});
   return audioCtx;
 };
 
-const tone = (freq: number, start: number, dur: number, gain = 0.12, type: OscillatorType = 'sine') => {
+const tone = (
+  freq: number,
+  start: number,
+  dur: number,
+  gain = 0.12,
+  type: OscillatorType = 'sine',
+) => {
   const ac = ctx();
   if (!ac) return;
   const osc = ac.createOscillator();
@@ -30,7 +39,8 @@ const soundOn = () => useProgress.getState().settings.sound;
 const hapticsOn = () => useProgress.getState().settings.haptics;
 
 const vibrate = (pattern: number | number[]) => {
-  if (hapticsOn() && typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(pattern);
+  if (hapticsOn() && typeof navigator !== 'undefined' && navigator.vibrate)
+    navigator.vibrate(pattern);
 };
 
 export const sfx = {

@@ -6,3 +6,7 @@ dist-ssr
 coverage
 .vite
 *.log
+
+# Browser test artifacts
+test-results/
+playwright-report/
